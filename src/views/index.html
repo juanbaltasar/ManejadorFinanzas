@@ -24,14 +24,15 @@
     </div>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
-        //const axios = require('axios');
+        const url = "https://603c46e8f4333a0017b6755c.mockapi.io/api/Operaciones";
+
         cargaResultados = async () => {
             // var req = new XMLHttpRequest();
             // req.open("GET", "https://603c46e8f4333a0017b6755c.mockapi.io/api/Operaciones");
             // req.send();
             let resultados;
             //resultados = await fetch("https://603c46e8f4333a0017b6755c.mockapi.io/api/Operaciones").then(response => response.json());
-            resultados = await axios.get("https://603c46e8f4333a0017b6755c.mockapi.io/api/Operaciones").then((response) => {return response.data;})
+            resultados = await axios.get(url).then((response) => {return response.data;})
             console.log(resultados);
             creaMovimientto(resultados);
 
@@ -39,15 +40,17 @@
 
         creaMovimientto = (data) => {
             let lista = document.querySelector(".listaOperaciones")
+            lista.innerHTML = ""
             for (const res of data) {
                 let TipoOperacion = (res.EsGasto ? 'Gasto' : 'Ingreso')
                 lista.innerHTML += 
-                `<div style="border: 1px solid; border-radius: 5%; margin: auto auto" class="col-md-9">
+                `<div style="position: sticky; border: 1px solid; border-radius: 5%; margin: auto auto" class="col-md-9">
                     <input type="hidden" id="Id" value="${res.id}"/>
                     <h1>${TipoOperacion}</h1>
                     <p>${res.Razon}</p>
                     <p>${res.Importe}</p>
                     <p>${new Date(res.Fecha).getDay()}/${new Date(res.Fecha).getMonth() + 1}/${new Date(res.Fecha).getFullYear()}</p>
+                    <button style="top:0; right:0; position: absolute;" id="botonBorrar${res.id}" onclick="eliminarOperacion(${res.id})">Eliminar Operacion</button>
                 </div>`
             }
         }
@@ -60,14 +63,16 @@
 
             console.log(Fecha);
 
-            axios.post('https://603c46e8f4333a0017b6755c.mockapi.io/api/Operaciones', {
+            axios.post(url, {
                 Razon,
                 Importe,
                 Fecha,
                 EsGasto
-            })
+            }).then(() => {cargaResultados();})
+        }
 
-            cargaResultados();
+        eliminarOperacion = (index) => {
+            axios.delete(url + `/${index}`).then(() => {cargaResultados()})
         }
 
         document.addEventListener("DOMContentLoaded", cargaResultados());
