@@ -8,6 +8,7 @@
 </head>
 <body>
     <h1 style="text-align: center;">Manejo De Finanzas</h1>
+    <h3 id="Ahorro"></h3>
     <div class="container">
         <div class="row listaOperaciones">
             
@@ -34,11 +35,19 @@
             //resultados = await fetch("https://603c46e8f4333a0017b6755c.mockapi.io/api/Operaciones").then(response => response.json());
             resultados = await axios.get(url).then((response) => {return response.data;})
             console.log(resultados);
-            creaMovimientto(resultados);
-
+            creaMovimiento(resultados);
+            let AhorroTotal = 0;
+            for (const res of resultados) {
+                if (res.EsGasto) {
+                    AhorroTotal -= Number(res.Importe);
+                } else {
+                    AhorroTotal += Number(res.Importe);
+                }
+            }
+            document.querySelector("#Ahorro").innerHTML = AhorroTotal;
         }
 
-        creaMovimientto = (data) => {
+        creaMovimiento = (data) => {
             let lista = document.querySelector(".listaOperaciones")
             lista.innerHTML = ""
             for (const res of data) {
