@@ -1,3 +1,5 @@
+console.log('loaded')
+
 const url = "https://603c46e8f4333a0017b6755c.mockapi.io/api/Operaciones";
 
 cargaResultados = async () => {
