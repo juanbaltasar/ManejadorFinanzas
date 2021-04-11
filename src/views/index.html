@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
     <h1 style="text-align: center;">Manejo De Finanzas</h1>
@@ -24,67 +25,6 @@
         <button id="botonSubmit" onclick="subirDatos()">Cargar Operacion</button>
     </div>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script>
-        const url = "https://603c46e8f4333a0017b6755c.mockapi.io/api/Operaciones";
-
-        cargaResultados = async () => {
-            // var req = new XMLHttpRequest();
-            // req.open("GET", "https://603c46e8f4333a0017b6755c.mockapi.io/api/Operaciones");
-            // req.send();
-            let resultados;
-            //resultados = await fetch("https://603c46e8f4333a0017b6755c.mockapi.io/api/Operaciones").then(response => response.json());
-            resultados = await axios.get(url).then((response) => {return response.data;})
-            console.log(resultados);
-            creaMovimiento(resultados);
-            let AhorroTotal = 0;
-            for (const res of resultados) {
-                if (res.EsGasto) {
-                    AhorroTotal -= Number(res.Importe);
-                } else {
-                    AhorroTotal += Number(res.Importe);
-                }
-            }
-            document.querySelector("#Ahorro").innerHTML = "$" + AhorroTotal;
-        }
-
-        creaMovimiento = (data) => {
-            let lista = document.querySelector(".listaOperaciones")
-            lista.innerHTML = ""
-            for (const res of data) {
-                let TipoOperacion = (res.EsGasto ? 'Gasto' : 'Ingreso')
-                lista.innerHTML += 
-                `<div style="position: sticky; border: 1px solid; border-radius: 5%; margin: auto auto" class="col-md-9">
-                    <input type="hidden" id="Id" value="${res.id}"/>
-                    <h1>${TipoOperacion}</h1>
-                    <p>${res.Razon}</p>
-                    <p>${res.Importe}</p>
-                    <p>${new Date(res.Fecha).getDay()}/${new Date(res.Fecha).getMonth() + 1}/${new Date(res.Fecha).getFullYear()}</p>
-                    <button style="top:0; right:0; position: absolute;" id="botonBorrar${res.id}" onclick="eliminarOperacion(${res.id})">Eliminar Operacion</button>
-                </div>`
-            }
-        }
-
-        subirDatos = () => {
-            const EsGasto = (document.querySelector("#TipoOperacion").value == "gasto" ? true : false);
-            const Razon = document.querySelector("#Razon").value;
-            const Importe = document.querySelector("#Importe").value;
-            const Fecha = new Date();
-
-            console.log(Fecha);
-
-            axios.post(url, {
-                Razon,
-                Importe,
-                Fecha,
-                EsGasto
-            }).then(() => {cargaResultados();})
-        }
-
-        eliminarOperacion = (index) => {
-            axios.delete(url + `/${index}`).then(() => {cargaResultados()})
-        }
-
-        document.addEventListener("DOMContentLoaded", cargaResultados());
-    </script>
+    <script src="./index.js"/>
 </body>
 </html>

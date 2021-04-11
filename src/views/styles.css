@@ -1,0 +1,5 @@
+.listaOperaciones{
+    height: 75vh;
+    overflow: hidden;
+    overflow-y: scroll;
+}
